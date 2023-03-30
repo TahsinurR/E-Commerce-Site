@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <title></title>
+</head>
+<body>
+    <div class="container">
+
+        <nav class="navbar navbar-expand-sm navbar-info bg-info">
+
+            <div class="container-fluid">
+                <a class="navbar-brand">CTG Vegetables</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <img src="veg1.png" alt="Avatar Logo" style="width:30px;" class="rounded-pill">
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Products</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">All Products</a></li>
+                                <li><a class="dropdown-item" href="#">By Company</a></li>
+                            </ul>
+                        </li>
+
+
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="login" class="nav-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Login
+                            </a>
+                        </li>
+                    </ul>
+                    <form method="post" class="d-flex">
+                        <input class="form-control me-2" type="text" placeholder="Search">
+                        <button class="btn btn-primary" type="button">Search</button>
+                    </form>
+                </div>
+            </div>
+
+        </nav>
+
+        <div role="main">
+            <table id="contacts" class="table">
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Rate</th>
+                        <th>Image</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+        <div>
+            <label for="itemcode" class="form-control">Item Code:</label>
+            <input type="text" id="itemcode" name="itemcode" class="form-control" />
+        </div>
+
+        <div>
+            <label for="itemname" class="form-control">Item Name:</label>
+            <input type="text" id="itemname" class="form-control" name="itemname" />
+        </div>
+        <div>
+            <label for="category" class="form-control">Category:</label>
+            <input type="text" class="form-control" id="category" name="category" />
+        </div>
+
+        <div>
+            <label for="rate" class="form-control">Rate:</label>
+            <input type="text" id="rate" name="rate" class="form-control" />
+        </div>
+        <img id="logo1" src="veg1.png" width="100" />
+        <label for="classhere">Picture:</label>
+        <!-- <input type="text" id="picture" name="picture" /> -->
+        <div>
+            <input class="classhere form-control" type="file" name="logo" id="logo" />
+        </div>
+        <div class="buttons">
+            <button id="btnSave" name="save" onclick="save()">Save</button>
+            <button id="btnEdit" name="edit" onclick="save('edit')"> Edit</button>
+            <button id="btnDelete" name="Delete" onclick="deleteContact()">Delete</button>
+        </div>
+
+        <hr />
+        <div class="imagearea"></div>
+
+        <script>
+$(document).ready(function () {
+
+var key;
+function retrieveFromStorage() {
+a = localStorage.getItem('items');
+//alert(a);
+return a ? JSON.parse(a) : [];
+}
+display = function () {
+a = localStorage.getItem('items');
+//alert(a);
+r = a ? JSON.parse(a) : [];
+var html = '';
+
+for (var i = 0; i < r.length; i++) {
+var contact = r[i];
+html += `<tr id="edit" onclick="loadContact('${i}')"><td>${contact.itemcode}</td><td>${contact.itemname}</td><td> ${contact.category}</td><td> ${contact.rate}</td><td><img src='${contact.logo}' width='100px' height='100px'/></td></tr>`;
+}
+$('#contacts tbody').html(html);
+};
+display();
+function bindToGrid(r) {
+var html = '';
+
+for (var i = 0; i < r.length; i++) {
+var contact = r[i];
+html += `<tr id="edit" onclick="loadContact('${i}')"><td>${contact.itemcode}</td><td>${contact.itemname}</td><td> ${contact.category}</td><td> ${contact.rate}</td><td><img src='${contact.logo}' width='100px' height='100px'/></td></tr>`;
+}
+$('#contacts tbody').html(html);
+};
+save = function (mode = "") {
+var contact = {};
+contact.itemcode = $('#itemcode').val();
+contact.itemname = $('#itemname').val();
+contact.category = $('#category').val();
+contact.rate = $('#rate').val();
+contact.logo = $('#logo1').attr("src");
+results = retrieveFromStorage();
+if (mode == "edit") results[key] = contact;
+else results.push(contact);
+localStorage.setItem('items', JSON.stringify(results));
+display();
+};
+loadContact = function (a) {
+key = a;
+var results = retrieveFromStorage();
+var contact = results[a];
+$('#itemcode').val(contact.itemcode);
+$('#itemname').val(contact.itemname);
+$('#category').val(contact.category);
+$('#rate').val(contact.rate);
+$('#logo1').attr("src", contact.logo);
+// $('#logo').val(contact.logo);
+};
+deleteContact = function () {
+results = retrieveFromStorage();
+results.splice(key, 1);
+localStorage.clear();
+localStorage.setItem('items', JSON.stringify(results));
+bindToGrid(results);
+}
+$("#logo").change(function () {
+var fileInput = $(".classhere")[0];
+var file = fileInput.files[0];
+var reader = new FileReader();
+reader.onload = function (e) {
+$('#logo1').attr("src", reader.result);
+}
+reader.readAsDataURL(file);
+});
+});
+        </script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <title></title>
+    <style>
+        .item {
+            border: 1px solid pink;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .thumb {
+            text-align: center;
+            border-radius: 8px;
+            min-height: 250px;
+            background-color: white;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        #cart {
+            width: 150px;
+            height: 60px;
+            border: 1px solid gray;
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header style="background-image:url(veg.jpg)">
+            <div class="row">
+                <div class="col-sm-2">
+                    <img class="img-thumbnail" src="veg1.png"/>
+                </div>
+                <div class="badge bg-primary text-wrap col-sm-4">
+                    <h1>Biggest Online Vegetables Market in CTG</h1>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div id="cart" class="btn btn-outline-primary" onclick="window.location='htmlpage3.html'">Cart</div>
+                    </div>
+                    <div class="jumbotron">
+                        <h1 class="display-12">Shop now</h1>
+                        <p class="lead">This project was built by Md Tahsinur Rahman 1269356..........</p>
+                        <hr class="my-12">
+                        <p>Round 51, Ditc,IDB-BISEW Project</p>
+
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        <div class="row">
+            <nav class="navbar navbar-expand-sm navbar-info bg-info">
+
+                <div class="container-fluid">
+                    <a class="navbar-brand">CTG Vegetables</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <img src="veg1.png" alt="Avatar Logo" style="width:30px;" class="rounded-pill">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Products</a>
+                                <ul class="dropdown-menu" id="dept">
+                                    <!--<li><a class="dropdown-item" href="#">All Products</a></li>
+                                    <li><a class="dropdown-item" href="#">By Company</a></li>-->
+                                </ul>
+                            </li>
+
+
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#">Disabled</a>
+                            </li>
+                            <li class="nav-item">
+                                <a style="cursor:pointer" id="login" class="nav-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    Login
+                                </a>
+                            </li>
+                        </ul>
+                        <form method="post" class="d-flex">
+                            <input class="form-control me-2" type="text" placeholder="Search" id="search">
+                            <button class="btn btn-primary" type="button" onclick="getListByDept()">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+            </nav>
+
+        </div>
+
+
+
+        <div class="row" id="show">
+
+        </div>
+
+
+
+
+        <script>
+$(document).ready(function () {
+
+var key;
+cart = [];
+qty = 0;
+total = 0;
+arr = [];
+function retrieveFromStorage() {
+a = localStorage.getItem('items');
+return a ? JSON.parse(a) : [];
+}
+display = function () {
+results = retrieveFromStorage();
+bindToGrid(results);
+};
+display();
+menus = function () {
+str=""
+r = retrieveFromStorage();
+for (var i = 0; i < r.length; i++) {
+var c = r[i];
+if (arr.indexOf(c.category) == -1) {
+arr.push(c.category);
+str += `<li><a class="dropdown-item" href="?dept=${c.category}">${c.category}</a></li>`;
+}
+
+}
+// alert(str)
+$("#dept").html(str);
+};
+menus();
+function showdeptwisegrid() {
+var urlParams = new URLSearchParams(window.location.search);
+//alert(urlParams.get('dept')); // true
+d = urlParams.get('dept')
+results = retrieveFromStorage();
+bindToGrid(results,d);
+}
+showdeptwisegrid();
+function bindToGrid(r,dept="") {
+var html = '';
+
+for (var i = 0; i < r.length; i++) {
+var contact = r[i];
+if (dept == "" || dept==null) {
+html += `<div class="col-md-3"><div class="item">Item: ${contact.itemname}<br/>Price: ${contact.rate}<br/><img src='${contact.logo}' class='img-fluid img-thumbnail img-responsive thumb'/><br/><a class='btn btn-info ' href="#" onclick="CartMe('${contact.itemname}','${contact.rate}')">Add to Cart</a></div></div>`;
+}
+else {
+if (dept == contact.category) {
+html += `<div class="col-md-3"><div class="item">Item: ${contact.itemname}<br/>Price: ${contact.rate}<br/><img src='${contact.logo}' class='img-fluid img-thumbnail img-responsive thumb'/><br/><a class='btn btn-info' href="#" onclick="CartMe('${contact.itemname}','${contact.rate}')">Add to Cart</a></div></div>`;
+}
+}
+}
+
+$('#show').html(html);
+};
+getListByDept = function () {
+r = retrieveFromStorage();
+s = $("#search").val();
+html = "";
+for (var i = 0; i < r.length; i++) {
+var contact = r[i];
+//alert(contact.itemname+"   "+s);
+if (contact.itemname.toUpperCase().indexOf(s.toUpperCase()) > -1) {//if the text value is included in itemname
+html += `<div class="col-md-3"><div class="item">Item: ${contact.itemname}<br/>Price: ${contact.rate}<br/><img src='${contact.logo}' class='img-fluid img-thumbnail img-responsive thumb'/><br/><a class='btn btn-info ' href="#" onclick="CartMe('${contact.itemname}','${contact.rate}')">Add to Cart</a></div></div>`;
+}
+}
+$('#show').html(html);
+}
+
+deleteContact = function (key) {
+results = getCarts();
+results.splice(key, 1);
+localStorage.removeItem("cart");
+localStorage.setItem('cart', JSON.stringify(results));
+getcartItems();
+cartitems();
+
+
+}
+
+
+});
+
+function getCarts() {
+a = localStorage.getItem('cart');
+return a ? JSON.parse(a) : [];
+}
+function getTotal() {
+cart = getCarts();
+t = 0;
+tm = 0;
+for (i = 0; i < cart.length; i++) {
+var a = cart[i];
+t += Number(a.qty);
+tm += Number(a.qty) * Number(a.total);
+
+}
+qty = t;
+total = tm;
+
+}
+function getcartItems() {
+getTotal();
+$("#cart").html(`Items: ${qty}<br/>Price: ${total}`);
+}
+getcartItems();
+function CartMe(a, b) {
+r = getCarts();
+for (var i = 0; i < r.length; i++) {
+var c = r[i];
+//alert(c.name+"   "+a)
+if (c.name == a) {
+r[i].qty++;
+//alert(r[i].total + "   " + c.total)
+//r[i].total = Number(r[i].total)+Number(c.total);
+localStorage.setItem('cart', JSON.stringify(r));
+getcartItems();
+return;
+}
+}
+
+var item = new Object();
+item.name = a;
+item.qty = 1;
+item.total = b;
+results = getCarts();
+results.push(item);
+localStorage.setItem('cart', JSON.stringify(results));
+getcartItems();
+}
+function cartitems() {
+r = getCarts();
+html = `<table class="table"><tr><th>Slno</th><th>Item</th><th>Qty</th><th>Price</th><th>Total</th><th></th>`;
+sl = 1;
+for (var i = 0; i < r.length; i++) {
+var c = r[i];
+tp = c.qty * c.total;
+html += `<tr><td>${sl++}</td><td>${c.name}</td><td>${c.qty}</td><td>${c.total}</td><td>${tp}</td><td><button type="button" class="btn btn-warning" onclick="deleteContact(${i})">Remove</button></td>`;
+}
+html += "</table>";
+$('.modal-body').html(html);
+}
+        </script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
